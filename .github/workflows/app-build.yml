@@ -1,22 +1,53 @@
-name: AppBuild
+name: Build selective Docker images
 
-on: 
+on:
   push:
     branches:
-    - main
+      - main
     paths:
-      - 'app/**'
-  workflow_dispatch:
+      - 'app/backend/**'
+      - 'app/frontend/**'
 
 jobs:
-  BackendBuild:
+  changes:
+    name: Detect changed folders
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app/backend
-    
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-      - name: Checkout Code
+      - uses: actions/checkout@v5
+        name: Get Code
+      - name: Detect which folders changed
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'app/backend/**'
+            frontend:
+              - 'app/frontend/**'
+
+  build-backend:
+    name: Build backend image
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
         uses: actions/checkout@v5
-      - name: print event
-        run: echo "${{ toJSON(github) }}"
+      - name: Build backend image
+        run: |
+          docker build -t myorg/backend:latest app/backend
+
+  build-frontend:
+    name: Build frontend image
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v4
+      - name: Build frontend image
+        run: |
+          docker build -t myorg/frontend:latest app/frontend
