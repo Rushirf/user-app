@@ -1,0 +1,22 @@
+name: AppBuild
+
+on: 
+  push:
+    branches:
+    - main
+    paths:
+      - 'app/**'
+  workflow_dispatch:
+
+jobs:
+  BackendBuild:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/backend
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+      - name: print event
+        run: echo "${{ toJSON(github) }}"

@@ -1,0 +1,4 @@
+infra/.terraform
+infra/.terraform.lock.hcl
+app/docker-compose.yml
+demo.json
