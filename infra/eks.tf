@@ -77,3 +77,38 @@ resource "aws_iam_role_policy_attachment" "CloudWatchFullAccess" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
   role       = aws_iam_role.node-role.name
 }
+
+resource "aws_iam_policy" "AWSLoadBalancerControllerIAMPolicy" {
+  name = var.eks.iam_policy.name
+  policy = file("eks_service_account_iam_policy.json")
+}
+
+resource "aws_iam_role" "eks_service_account_role" {
+  name = var.eks.service_account_role.name
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Federated = aws_iam_openid_connect_provider.eks_oidc.arn
+      }
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringEquals = {
+          "${aws_iam_openid_connect_provider.eks_oidc.url}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks-service-account-policy-attachment" {
+  role = aws_iam_role.eks_service_account_role.name
+  policy_arn = aws_iam_policy.AWSLoadBalancerControllerIAMPolicy.arn
+}
+
+resource "aws_iam_openid_connect_provider" "eks_oidc" {
+  url = aws_eks_cluster.mycluster.identity[0].oidc[0].issuer
+  client_id_list  = ["sts.amazonaws.com"]
+  #thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da0ecd0e645"]
+}

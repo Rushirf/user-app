@@ -90,7 +90,7 @@ resource "aws_route_table" "userapp-private-route" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.userapp-ngw.id
+    nat_gateway_id = aws_nat_gateway.userapp-ngw.id
   }
 }
 

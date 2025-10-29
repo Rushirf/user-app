@@ -79,5 +79,26 @@ eks = {
   node_role = {
     name = "eks-node-role"
   }
+
+  service_account_role = {
+    name = "eks-service-account-role"
+  }
+
+  iam_policy = {
+    name = "AWSLoadBalancerControllerIAMPolicy"
+  }
+
+  service_account = {
+    name = "aws-load-balancer-controller"
+  }
   
+}
+
+helm = {
+  release_name = "aws-load-balancer-controller"
+  chart = "aws-load-balancer-controller"
+  repo = "https://aws.github.io/eks-charts"
+  namespace = "kube-system"
+  version = "1.14.0"
+  region = "us-east-1"
 }
