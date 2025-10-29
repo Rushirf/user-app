@@ -1,4 +1,4 @@
-name: Infra Build Validation Flow
+name: InfraBuildValidation
 
 on: 
   pull_request:

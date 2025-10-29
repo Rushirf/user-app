@@ -1,4 +1,4 @@
-name: Build selective Docker images
+name: BuildApp
 
 on:
   push:

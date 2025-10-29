@@ -1,4 +1,4 @@
-name: Deploy
+name: InfraDeploy
 
 on:
   workflow_run:
