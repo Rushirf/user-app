@@ -1,32 +1,34 @@
-name: InfraBuild
+name: InfraDeploy
 
-on: 
-  push:
-    branches:
-      - main
-    paths:
-      - ./infra
-  workflow_dispatch: 
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
 
 permissions:
   id-token: write
   contents: read
 
+env:
+  GH_PAT: ${{ secrets.GH_PAT }}
+
 jobs:
-  Plan:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: infra
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v5
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.3
-
+        
       - name: AWS Configure
         uses: aws-actions/configure-aws-credentials@v5.1.0
         with:
@@ -37,15 +39,14 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
-      - name: Validate Terraform configuration
-        run: terraform validate
-
-      - name: Run Terraform Plan
-        run: terraform plan -out=tfplan 
-
-      - name: Upload Terraform plan artifact
-        uses: actions/upload-artifact@v4
+      - name: Download Terraform plan artifact
+        uses: actions/download-artifact@v5
         with:
           name: tfplan
-          path: infra/tfplan
-      
+          github-token: ${{ env.GH_PAT }}
+          run-id: ${{ github.event.workflow_run.id }}
+          repository: Rushirf/user-app
+
+
+      - name: Apply Terraform plan
+        run: echo "hello"

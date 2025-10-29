@@ -1,34 +1,34 @@
-name: DeployInfra
+name: BuildInfraValidation
 
-on:
-  workflow_run:
-    workflows: ["Build"]
-    types:
-      - completed
+on: 
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - main
+    paths:
+      - ./infra
+  workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
 
-env:
-  GH_PAT: ${{ secrets.GH_PAT }}
 
 jobs:
-  deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  Plan:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: infra
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v5
-
+        
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.3
-        
+
       - name: AWS Configure
         uses: aws-actions/configure-aws-credentials@v5.1.0
         with:
@@ -39,14 +39,8 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
-      - name: Download Terraform plan artifact
-        uses: actions/download-artifact@v5
-        with:
-          name: tfplan
-          github-token: ${{ env.GH_PAT }}
-          run-id: ${{ github.event.workflow_run.id }}
-          repository: Rushirf/user-app
+      - name: Validate Terraform configuration
+        run: terraform validate
 
-
-      - name: Apply Terraform plan
-        run: echo "hello"
+      - name: Plan Terraform deployment
+        run: terraform plan
