@@ -53,12 +53,11 @@ eks = {
   }
 
   node_group = {
-    name = "my-node-group"
-    desired_size = 2
-    max_size     = 2
-    min_size     = 2
+    name           = "my-node-group"
+    desired_size   = 2
+    max_size       = 2
+    min_size       = 2
     instance_types = ["m7i-flex.large"]
-
   }
 
   addons = {

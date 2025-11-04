@@ -16,6 +16,7 @@ resource "aws_eks_node_group" "mynodegroup" {
   node_role_arn = aws_iam_role.node-role.arn
   subnet_ids = [aws_subnet.userapp-private-subnet["private_subnet_1"].id,aws_subnet.userapp-private-subnet["private_subnet_2"].id]
   instance_types = var.eks.node_group.instance_types
+
   scaling_config {
     desired_size = var.eks.node_group.desired_size
     max_size = var.eks.node_group.max_size
@@ -46,6 +47,11 @@ resource "aws_iam_role" "node-role" {
 resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster-role.name
+}
+
+resource "aws_iam_role_policy_attachment" "AmazonSSMFullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+  role       = aws_iam_role.node-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
