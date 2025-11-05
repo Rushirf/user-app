@@ -102,6 +102,7 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      tag: ${{ steps.tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v5
         name: Get Code
@@ -114,14 +115,18 @@ jobs:
               - 'app/backend/**'
             frontend:
               - 'app/frontend/**'
+      - name: Set version tag
+        id: tag
+        run: |
+          TAG="v1.${{ github.run_number }}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Generated tag: $TAG"
 
   build-backend:
     name: Build backend image
     needs: changes
     if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.version.outputs.NEW_TAG }}
     steps:
       - name: Get Code
         uses: actions/checkout@v5
@@ -131,20 +136,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Get latest backend version
-        id: version
-        run: |
-          LATEST=$(curl -s https://hub.docker.com/v2/repositories/rushidevops/user_app/tags/?page_size=100 | jq -r '.results[].name' | grep backend_v | sort -V | tail -n 1)
-          echo "Latest tag: $LATEST"
-          if [ -z "$LATEST" ]; then
-            NEW_TAG="backend_v1.01"
-          else
-            VERSION_NUM=$(echo $LATEST | sed 's/backend_v//' | awk '{printf "%.2f", $1 + 0.01}')
-            NEW_TAG="backend_v${VERSION_NUM}"
-          fi
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_OUTPUT
-          echo "Using tag: $NEW_TAG"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -154,15 +145,13 @@ jobs:
         with:
           context: app/backend
           push: true
-          tags: rushidevops/user_app:${{ steps.version.outputs.NEW_TAG }}
+          tags: rushidevops/user_app:${{ needs.changes.outputs.tag }}
 
   build-frontend:
     name: Build frontend image
     needs: changes
     if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.version.outputs.NEW_TAG }}
     steps:
       - name: Get Code
         uses: actions/checkout@v5
@@ -173,20 +162,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Get latest frontend version
-        id: version
-        run: |
-          LATEST=$(curl -s https://hub.docker.com/v2/repositories/rushidevops/user_app/tags/?page_size=100 | jq -r '.results[].name' | grep frontend_v | sort -V | tail -n 1)
-          echo "Latest tag: $LATEST"
-          if [ -z "$LATEST" ]; then
-            NEW_TAG="frontend_v1.01"
-          else
-            VERSION_NUM=$(echo $LATEST | sed 's/frontend_v//' | awk '{printf "%.2f", $1 + 0.01}')
-            NEW_TAG="frontend_v${VERSION_NUM}"
-          fi
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_OUTPUT
-          echo "Using tag: $NEW_TAG"
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -195,4 +170,4 @@ jobs:
         with:
           context: app/frontend
           push: true
-          tags: rushidevops/user_app:${{ steps.version.outputs.NEW_TAG }}
+          tags: rushidevops/user_app:${{ needs.changes.outputs.tag }}
