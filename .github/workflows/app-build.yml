@@ -145,7 +145,7 @@ jobs:
         with:
           context: app/backend
           push: true
-          tags: rushidevops/user_app:${{ needs.changes.outputs.tag }}
+          tags: rushidevops/user_app:frontend_${{ needs.changes.outputs.tag }}
 
   build-frontend:
     name: Build frontend image
@@ -170,4 +170,4 @@ jobs:
         with:
           context: app/frontend
           push: true
-          tags: rushidevops/user_app:${{ needs.changes.outputs.tag }}
+          tags: rushidevops/user_app:backend_${{ needs.changes.outputs.tag }}
