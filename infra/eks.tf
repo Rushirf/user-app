@@ -54,6 +54,16 @@ resource "aws_iam_role_policy_attachment" "AmazonSSMFullAccess" {
   role       = aws_iam_role.node-role.name
 }
 
+resource "aws_iam_role_policy_attachment" "AmazonS3FullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  role       = aws_iam_role.node-role.name
+}
+
+resource "aws_iam_role_policy_attachment" "AmazonSecretManagerReadAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSSecretsManagerClientReadOnlyAccess"
+  role       = aws_iam_role.node-role.name
+}
+
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.node-role.name

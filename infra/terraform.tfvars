@@ -45,6 +45,19 @@ security_groups = {
   
 } 
 
+s3 = {
+  bucket_name           = "userapp-s3-bucket"
+  force_destroy         = true
+  versioning            = "Enabled"
+
+  pab = {
+    block_public_acls = true
+    block_public_policy = true
+    ignore_public_acls = true
+    restrict_public_buckets = true
+  }
+}
+
 eks = {
   
   cluster = {
@@ -101,3 +114,5 @@ helm = {
   version = "1.14.0"
   region = "us-east-1"
 }
+
+

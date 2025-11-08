@@ -12,3 +12,5 @@ variable "security_groups" {}
 variable "eks" {}
 
 variable "helm" {}
+
+variable "s3" {}

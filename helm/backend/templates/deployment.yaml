@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-backend
+  labels:
+    version: v1
+    app: user-app
+spec:
+  selector:
+    matchLabels:
+      tier: backend
+  template:
+    metadata:
+      labels:
+        tier: backend
+    spec:
+      containers:
+        - name: backend
+          image: rushidevops/user_app:backend_v1.01
+          envFrom:
+            - configMapRef:
+                name: backend-config
+  replicas: 3

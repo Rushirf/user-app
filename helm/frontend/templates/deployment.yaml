@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-frontend
+  labels:
+    version: v1
+    app: user-app
+spec:
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: rushidevops/user_app:frontend_v1.01
+          envFrom:
+            - configMapRef:
+                name: frontend-config
+  replicas: 3

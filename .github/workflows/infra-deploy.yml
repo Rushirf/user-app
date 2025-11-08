@@ -49,4 +49,4 @@ jobs:
 
 
       - name: Apply Terraform plan
-        run: echo "hello"
+        run: terraform apply -auto-approve

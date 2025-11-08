@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
+const path = require("path");
 const userModel = require("../models/userModel");
-const { cloudinaryUpload } = require("../services/cloudinaryService");
+const { uploadToS3 } = require("../services/s3Service");
 
 const userRegister = async (req, res) => {
   const { name, email, phoneNumber, password, gender, age, city } = req.body;
@@ -21,11 +22,9 @@ const userRegister = async (req, res) => {
     // );
 
     if (req.file) {
-      const cloudinaryUrl = await cloudinaryUpload(
-        `public/users/${user._id}/profile-picture`,
-        req.file
-      );
-      user.profilePicture = cloudinaryUrl;
+      const s3Key = `users/${user._id}/profile-picture-${Date.now()}${path.extname(req.file.originalname)}`;
+      const s3Url = await uploadToS3(s3Key, req.file);
+      user.profilePicture = s3Url;
       await user.save();
     }
 
