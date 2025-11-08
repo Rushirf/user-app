@@ -1,0 +1,22 @@
+replicaCount: 2
+
+labels:
+  app: user-app
+  tier: backend
+
+image:
+  repository: rushidevops/user_app
+  tag: backend
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+  protocol: TCP
+
+env:
+  PORT: 8080
+  AWS_SECRET_NAME: "user-app-backend-secret"
+  S3_BUCKET_NAME: "rushi-temp-user-app-bucket"
+  
+

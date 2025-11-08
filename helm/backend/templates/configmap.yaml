@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: backend-config
+  name: {{ .Chart.Name }}-configmap
 data:
-  PORT: "8080"
-  AWS_SECRET_NAME: "user-app-backend-secret"
-  S3_BUCKET_NAME: "rushi-temp-user-app-bucket"
+  PORT: {{ .Values.env.PORT }}
+  AWS_SECRET_NAME: {{ .Values.env.AWS_SECRET_NAME }}
+  S3_BUCKET_NAME: {{ .Values.env.S3_BUCKET_NAME }}
