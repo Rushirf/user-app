@@ -41,10 +41,6 @@ private_subnets = {
   }
 }
 
-security_groups = {
-  
-} 
-
 s3 = {
   bucket_name           = "userapp-s3-bucket"
   force_destroy         = true
