@@ -1,23 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-frontend
+  name: {{ .Chart.Name }}-deployment
   labels:
-    version: v1
-    app: user-app
+    app: {{ .Values.labels.app }}
+    tier: {{ .Values.labels.tier }}
 spec:
   selector:
     matchLabels:
-      tier: frontend
+      app: {{ .Values.labels.app }}
+      tier: {{ .Values.labels.tier }}
   template:
     metadata:
       labels:
-        tier: frontend
+        app: {{ .Values.labels.app }}
+        tier: {{ .Values.labels.tier }}
     spec:
       containers:
-        - name: frontend
-          image: rushidevops/user_app:frontend_v1.01
+        - name: {{ .Chart.Name }}-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: frontend-config
-  replicas: 3
+                name: {{ .Chart.Name }}-configmap
+  replicas: {{ .Values.replicaCount }}

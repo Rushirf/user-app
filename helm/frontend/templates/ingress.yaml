@@ -1,26 +1,29 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-ssl-ingress
+  name: {{ .Chart.Name }}-ingress
+  labels:
+    app: {{ .Values.labels.app }}
+    tier: {{ .Values.labels.tier }}
   namespace: default
   annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS":443}]'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:086227530319:certificate/65f6c3f7-b2be-4d30-90aa-f8f8932cae73
-    alb.ingress.kubernetes.io/ssl-redirect: "443"
-    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
-    alb.ingress.kubernetes.io/group.name: nginx-ssl-group
+    kubernetes.io/ingress.class: {{ .Values.ingress.annotations.ingress_class | quote }}
+    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.annotations.scheme | quote }}
+    alb.ingress.kubernetes.io/target-type: {{ .Values.ingress.annotations.target_type | quote }}
+    alb.ingress.kubernetes.io/listen-ports: {{ .Values.ingress.annotations.listen_ports | quote }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.annotations.certificate_arn | quote }}
+    alb.ingress.kubernetes.io/ssl-redirect: {{ .Values.ingress.annotations.ssl_redirect | quote }}
+    alb.ingress.kubernetes.io/load-balancer-attributes: {{ .Values.ingress.annotations.load_balancer_attributes | quote }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.annotations.group_name | quote }}
 spec:
   rules:
-    - host: user-app.hitmann.xyz
+    - host: {{ .Values.ingress.host.hostname }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: frontend
+                name: {{ .Chart.Name }}-service
                 port:
-                  number: 80
+                  number: {{ .Values.service.port }}

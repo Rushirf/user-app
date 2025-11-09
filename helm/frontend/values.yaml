@@ -1,0 +1,35 @@
+replicaCount: 2
+
+labels:
+  app: user-app
+  tier: frontend
+
+image:
+  repository: rushidevops/user_app
+  tag: frontend
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+  protocol: TCP
+
+env:
+  node_env: "production"
+  base_url: "http://user-app-backend-service:8080"
+
+ingress:
+  annotations:
+    ingress_class: alb
+    scheme: internet-facing
+    target_type: ip
+    listen_ports: '[{"HTTP":80,"HTTPS":443}]'
+    certificate_arn: arn:aws:acm:us-east-1:086227530319:certificate/65f6c3f7-b2be-4d30-90aa-f8f8932cae73
+    ssl_redirect: "443"
+    load_balancer_attributes: idle_timeout.timeout_seconds=60
+    group_name: nginx-ssl-group
+  host:
+    hostname: user-app.hitmann.xyz
+  
+

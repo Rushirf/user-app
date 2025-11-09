@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frontend-config
+  name: {{ .Chart.Name }}-configmap
 data:
-  NEXT_PUBLIC_BASE_URL: "http://backend:8080"
-  NODE_ENV: "production"
+  NEXT_PUBLIC_BASE_URL: {{ .Values.env.base_url }}
+  NODE_ENV: {{ .Values.env.node_env }}
