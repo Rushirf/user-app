@@ -1,3 +1,28 @@
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = yamlencode([
+      {
+        rolearn  = aws_iam_role.node-role.arn
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups   = ["system:bootstrappers", "system:nodes"]
+      },
+      {
+        rolearn  = "arn:aws:iam::086227530319:role/tf-Role"
+        username = "terraform"
+        groups   = ["system:masters"]
+      }
+    ])
+  }
+
+  depends_on = [aws_eks_cluster.mycluster]
+}
+
+
 resource "kubernetes_service_account" "eks-service-account" {
   metadata {
     name = var.eks.service_account.name
