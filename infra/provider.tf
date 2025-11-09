@@ -1,3 +1,20 @@
+terraform {
+  required_providers {
+    helm = {
+      source = "hashicorp/helm"
+      version = "3.1.0"
+    }
+    aws = {
+      source = "hashicorp/aws"
+      version = "6.20.0"
+    }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.38.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-east-1"
 }
