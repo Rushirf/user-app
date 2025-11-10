@@ -63,3 +63,5 @@ async function getSecrets() {
     process.exit(1);
   }
 })();
+
+// remote it later
