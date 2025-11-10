@@ -1,4 +1,4 @@
-name: BuildbackendApp
+name: BuildBackendApp
 
 on:
   push:
@@ -8,6 +8,10 @@ on:
       - 'app/backend/**'
       - 'helm/backend/**'
   workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   changes:
@@ -80,7 +84,7 @@ jobs:
 
   deploy-new-image:
     name: Deploy New image
-    needs: changes
+    needs: [changes, build-backend-image]
     if: needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
     steps:
