@@ -80,7 +80,7 @@ jobs:
           aws-region: us-east-1
           role-session-name: GitHubActions
       - name: Apply Helm Configurations
-        run: helm upgrade --install --reuse-values --atomic helm/frontend
+        run: helm upgrade user-app-frontend helm/frontend --install --reuse-values --atomic 
 
   deploy-new-image:
     name: Deploy New image
@@ -97,4 +97,4 @@ jobs:
           aws-region: us-east-1
           role-session-name: GitHubActions
       - name: Apply Helm Configurations
-        run: helm upgrade --install --set image.version=${{ needs.changes.outputs.tag }} --reuse-values --atomic helm/frontend
+        run: helm upgrade --install user-app-frontend helm/frontend --set image.version=${{ needs.changes.outputs.tag }} --reuse-values --atomic
