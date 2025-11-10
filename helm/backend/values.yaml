@@ -17,7 +17,7 @@ service:
 
 env:
   PORT: 8080
-  AWS_SECRET_NAME: "user-app-backend-secret"
-  S3_BUCKET_NAME: "rushi-temp-user-app-bucket"
+  AWS_SECRET_NAME: user-app-backend-secret
+  S3_BUCKET_NAME: rushi-temp-user-app-bucket
   
 

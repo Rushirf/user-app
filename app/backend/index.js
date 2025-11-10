@@ -63,6 +63,3 @@ async function getSecrets() {
     process.exit(1);
   }
 })();
-
-
-// added comment for build test
