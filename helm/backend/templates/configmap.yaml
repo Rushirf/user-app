@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
-  PORT: {{ .Values.env.PORT }}
+  PORT: {{ .Values.env.PORT | quote }}
   AWS_SECRET_NAME: {{ .Values.env.AWS_SECRET_NAME | quote }}
   S3_BUCKET_NAME: {{ .Values.env.S3_BUCKET_NAME | quote }}
