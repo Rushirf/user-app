@@ -68,7 +68,7 @@ jobs:
   deploy-same-image:
     name: Deploy same image
     needs: changes
-    if: needs.changes.outputs.helm == 'true'
+    if: needs.changes.outputs.helm == 'true' && needs.changes.outputs.app == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
