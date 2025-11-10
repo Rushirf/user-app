@@ -16,6 +16,7 @@ spec:
         app: {{ .Values.labels.app }}
         tier: {{ .Values.labels.tier }}
     spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
       containers:
         - name: {{ .Chart.Name }}-container
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}_{{ .Values.image.version }}"

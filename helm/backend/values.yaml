@@ -19,5 +19,8 @@ env:
   PORT: 8080
   AWS_SECRET_NAME: user-app-backend-secret
   S3_BUCKET_NAME: userapp-s3-bucket
+
+
+serviceAccountName: userapp-service-account
   
 
