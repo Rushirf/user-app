@@ -99,6 +99,14 @@ eks = {
   service_account = {
     name = "aws-load-balancer-controller"
   }
+
+  userapp_service_account = {
+    name = "userapp-service-account"
+  }
+
+  userapp_role = {
+    name = "userapp-role"
+  }
   
 }
 

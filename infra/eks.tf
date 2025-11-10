@@ -128,3 +128,37 @@ resource "aws_iam_openid_connect_provider" "eks_oidc" {
   client_id_list  = ["sts.amazonaws.com"]
   #thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da0ecd0e645"]
 }
+
+resource "aws_iam_role" "eks_userapp_service_account_role" {
+  name = var.eks.userapp_role.name
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Federated = aws_iam_openid_connect_provider.eks_oidc.arn
+      }
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringEquals = {
+          "${aws_iam_openid_connect_provider.eks_oidc.url}:sub" = "system:serviceaccount:default:userapp-service-account"
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "GetScretForServiceAccount" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSSecretsManagerClientReadOnlyAccess"
+  role       = aws_iam_role.eks_service_account_role.name
+}
+
+resource "kubernetes_service_account" "eks-userapp-service-account" {
+  metadata {
+    name = var.eks.userapp_service_account.name
+    namespace = "default"
+    annotations = {
+        "eks.amazonaws.com/role-arn" = aws_iam_role.eks_userapp_service_account_role.arn
+    }
+  }
+}
