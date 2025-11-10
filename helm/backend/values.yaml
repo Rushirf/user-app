@@ -7,7 +7,7 @@ labels:
 image:
   repository: rushidevops/user_app
   tag: backend
-  version: v1.01
+  version: v1.10
   pullPolicy: Always
 
 service:

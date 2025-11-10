@@ -6,6 +6,7 @@ metadata:
     app: {{ .Values.labels.app }}
     tier: {{ .Values.labels.tier }}
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Values.labels.app }}
@@ -24,4 +25,3 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Chart.Name }}-configmap
-  replicas: {{ .Values.replicaCount }}
