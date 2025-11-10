@@ -153,6 +153,11 @@ resource "aws_iam_role_policy_attachment" "GetScretForServiceAccount" {
   role       = aws_iam_role.eks_userapp_service_account_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "S3FullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  role       = aws_iam_role.eks_userapp_service_account_role.name
+}
+
 resource "kubernetes_service_account" "eks-userapp-service-account" {
   metadata {
     name = var.eks.userapp_service_account.name
