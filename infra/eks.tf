@@ -150,7 +150,7 @@ resource "aws_iam_role" "eks_userapp_service_account_role" {
 
 resource "aws_iam_role_policy_attachment" "GetScretForServiceAccount" {
   policy_arn = "arn:aws:iam::aws:policy/AWSSecretsManagerClientReadOnlyAccess"
-  role       = aws_iam_role.eks_service_account_role.name
+  role       = aws_iam_role.eks_userapp_service_account_role.name
 }
 
 resource "kubernetes_service_account" "eks-userapp-service-account" {
