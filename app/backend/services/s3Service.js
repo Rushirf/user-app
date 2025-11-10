@@ -21,8 +21,7 @@ const uploadToS3 = async (key, file) => {
       Bucket: BUCKET_NAME,
       Key: key,
       Body: fileStream,
-      ContentType: contentType,
-      ACL: "public-read", // optional; makes file accessible via URL
+      ContentType: contentType
     };
 
     console.log(`[+] Uploading ${file.originalname} to S3...`);
