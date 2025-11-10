@@ -4,5 +4,5 @@ metadata:
   name: {{ .Chart.Name }}-configmap
 data:
   PORT: {{ .Values.env.PORT }}
-  AWS_SECRET_NAME: {{ .Values.env.AWS_SECRET_NAME }}
-  S3_BUCKET_NAME: {{ .Values.env.S3_BUCKET_NAME }}
+  AWS_SECRET_NAME: {{ .Values.env.AWS_SECRET_NAME | quote }}
+  S3_BUCKET_NAME: {{ .Values.env.S3_BUCKET_NAME | quote }}
