@@ -45,6 +45,7 @@ s3 = {
   bucket_name           = "userapp-s3-bucket"
   force_destroy         = true
   versioning            = "Enabled"
+  object_ownership = "BucketOwnerPreferred"
 
   pab = {
     block_public_acls = true

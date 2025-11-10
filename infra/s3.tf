@@ -20,3 +20,11 @@ resource "aws_s3_bucket_public_access_block" "userapp_pab" {
   restrict_public_buckets = var.s3.pab.restrict_public_buckets
 }
 
+resource "aws_s3_bucket_ownership_controls" "userapp-s3-ownership_controls" {
+  bucket = aws_s3_bucket.userapp-s3-bucket.bucket
+
+  rule {
+    object_ownership = var.s3.object_ownership
+  }
+}
+
